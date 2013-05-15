@@ -18,4 +18,4 @@ tmp
 debug/js
 debug/css
 debug/*.html
-
+*.swp
