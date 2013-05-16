@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["nomeaning@mma.club.uec.ac.jp"]
   spec.description   = %q{Markup Language like MoinMoin}
   spec.summary       = %q{Markup Language like MoinMoin}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/nomeaning777/Ndoc"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

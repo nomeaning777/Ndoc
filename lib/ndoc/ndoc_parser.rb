@@ -45,6 +45,7 @@ module Ndoc
       [/^,,(?<data>.+?),,/, :inline_subscript],
       [/^\^\^(?<data>.+?)\^\^/, :inline_superscript],
       [/^\[\[(?<data>.+?)\]\]/, :inline_link],
+      [/^{{(?<data>.+?)}}/, :inline_image],
       [/^'''(?<data>.+?)'''/, :inline_italic],
       [/^''(?<data>.+?)''/, :inline_bold],
       [/^`(?<data>.+?)`/, :inline_monospace],
@@ -98,7 +99,6 @@ module Ndoc
 
       end
       result << Outline.new(:break, -1, nil)
-      STDERR.puts(result)
       return result
     end
     
@@ -115,7 +115,11 @@ module Ndoc
         if p[0] == 'code'
           return '<pre class="prettyprint %s">%s</pre>' % [p[1..-1].map{|a| CGI::escapeHTML(a)}.join(' '), CGI::escapeHTML(parse_text)]
         else
-          return @parser[p[0].downcase].parse(parse_text, p[1..-1], self)
+          begin
+            return @parser[p[0].downcase].parse(parse_text, p[1..-1], self)
+          rescue
+            return "<div>Parser Error!</div>"
+          end
         end
       end
     end
@@ -224,8 +228,11 @@ module Ndoc
         load_macro(@macro_dir)
       end
       macro = match_data[:macro].split
-
-      return @macro[macro[0].downcase].macro(macro[1..-1], self)
+      begin
+        return @macro[macro[0].downcase].macro(macro[1..-1], self)
+      rescue
+        return '<div>Macro error</div>'
+      end
     end
 
     def inline_subscript(match_data)
@@ -238,13 +245,23 @@ module Ndoc
 
     def inline_link(match_data)
       res = match_data[:data].split('|')
-      url = res[0]
+      url = url(res[0])[0]
       if res[1]
         text = res[1]
       else
-        text = res[0]
+        text = url(res[0])[1]
       end
       return '<a href="%s">%s</a>' % [CGI::escapeHTML(url),CGI::escapeHTML(text)]
+    end
+    def inline_image(match_data)
+      res = match_data[:data].split('|')
+      url = url(res[0])[0]
+      if res[1]
+        text = res[1]
+      else
+        text = url(res[0])[1]
+      end
+      return '<img src="%s" alt="%s">' % [CGI::escapeHTML(url),CGI::escapeHTML(text)]
     end
   
     def inline_italic(match_data)
@@ -266,6 +283,10 @@ module Ndoc
     def inline_underline(match_data)
       return '<span style="text-decoration: underline;">%s</span>' % parse_inline(match_data[:data])
     end 
+    
+    def url(url)
+      return [url, url]
+    end
 
     private
     def change_indent(outline)
