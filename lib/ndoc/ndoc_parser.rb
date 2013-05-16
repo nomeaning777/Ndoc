@@ -54,7 +54,7 @@ module Ndoc
     ]
 
     def parse_outline
-      lines = @wiki_text.split("\n")
+      lines = @wiki_text.gsub("\r", "").split("\n")
       
       result = []
       parse_mode = :normal
