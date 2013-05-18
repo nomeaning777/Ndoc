@@ -45,7 +45,7 @@ module Ndoc
       [/^,,(?<data>.+?),,/, :inline_subscript],
       [/^\^\^(?<data>.+?)\^\^/, :inline_superscript],
       [/^\[\[(?<data>.+?)\]\]/, :inline_link],
-      [/^{{(?<data>.+?)}}/, :inline_image],
+      [/^\{\{(?<data>.+?)\}\}/, :inline_image],
       [/^'''(?<data>.+?)'''/, :inline_italic],
       [/^''(?<data>.+?)''/, :inline_bold],
       [/^`(?<data>.+?)`/, :inline_monospace],
