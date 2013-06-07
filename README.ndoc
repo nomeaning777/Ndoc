@@ -1,0 +1,28 @@
+= Ndoc =
+Ndoc is simple markup language like MoinMoinWiki.
+
+== Installation ==
+Add this line to your application's Gemfile:
+{{{
+gem 'ndoc'
+}}}
+And then execute:
+{{{
+$ bundle
+}}}
+Or install it yourself as:
+{{{
+$ gem install ndoc
+}}}
+== Example ==
+{{{code ruby
+require 'ndoc'
+
+source = <<<EOL
+= Hello Ndoc! =
+EOL
+
+parser = Ndoc::NdocParser.new(source)
+puts parser.to_html
+}}}
+
